@@ -1,0 +1,44 @@
+[
+  {
+    "id": "e5cf8db5-52f3-4fa5-862b-055ab95b26b6",
+    "case_id": "d35d76bf-aa27-4191-af80-ced12647537d",
+    "admin_address": "0xde394be3499eea6df0eab7d7d3954348263f106e",
+    "encrypted_share": "ENC(RSA/ECC)[8014423d21ebf68302a0abe3b91f1756a76cbfc9a9b99371fdef8f5e24111c5ba9edfc02b77f51c657bc94e0e950a020e84f320c88e3e9b1a58042b80822a572cefd12e6e254e0e8fd799ea9e9801c62514a548c839574facfe8759745fa54702ce8a44fa2ccbb498ee0a99b6a6e05f3918200c059016f2b998517da162f5f4c07e50]_with_mock_admin1_pub",
+    "created_at": "2026-02-28T19:50:21.891312"
+  },
+  {
+    "id": "9ca0e8c7-5d4b-4e12-89fe-31a37daa1ce3",
+    "case_id": "d35d76bf-aa27-4191-af80-ced12647537d",
+    "admin_address": "0x2aa4afe14b0592b5ebb0c247c610248d58cd14c4",
+    "encrypted_share": "ENC(RSA/ECC)[8028b46ec3c36d0c5544761d53f50ea8becd2e5852b806e67a1b7f77c8288973c21f69d0aee583869f6c79cbf375c045415a2402201da2b6bb0ab564d190dae10c3e35c8c4ac01c55b379c97e2da791e6281f90d172fd9e15e15bb24dbe0b8ea1815a88b058d17574c1be2f285181be2430ec185c3d7ff9272df7fa14c4a7f537fcfa]_with_mock_admin2_pub",
+    "created_at": "2026-02-28T19:50:21.891312"
+  },
+  {
+    "id": "1e42e896-848d-4ae2-a9b0-a5af99f915f2",
+    "case_id": "d35d76bf-aa27-4191-af80-ced12647537d",
+    "admin_address": "0x223ce90a190eb1bfe721be510d1ad6ea24f52999",
+    "encrypted_share": "ENC(RSA/ECC)[803ce650d22bab8967e7cdf8faec49fd49a2e197bb07c594f7f7902fdc3ff52b5bf1a5d1599c8246d8d36d2d0a26e06629166608f8f86b044e8ce7dfd9b10f9042c0672d26fba12e864d223d5b5c557a73c82d82d4b9bd1891fe4eb5ae19ac9c04fe1cc7d742cc1db2fd2b6a9f755e12f28a8146bad580ba6b595878ca6620191829c]_with_mock_admin3_pub",
+    "created_at": "2026-02-28T19:50:21.891312"
+  },
+  {
+    "id": "8af1cf3c-5240-4b46-b6e1-47cd252eca10",
+    "case_id": "b1d71e84-19cf-49c1-a52a-cefd76589c1b",
+    "admin_address": "0xde394be3499eea6df0eab7d7d3954348263f106e",
+    "encrypted_share": "ENC(RSA/ECC)[8017e6950f1e540edc7e43498ab1ce6384f1a0c7f4ad230d6df790f7cd6004019d27ae6a35dbec1edd117d2c00d3dc4f1bbc666afd39e9602558c75aae875ea97ed820dd2bcdb4855c7531fd4e788d9e3a92d8bcb9e58e02bd77b948e8999eff075024b4e405ee3039b9775cff536dc751215295c32ce2119c59e9e6edfe8198ac7ec]_with_mock_admin1_pub",
+    "created_at": "2026-02-28T19:53:23.248754"
+  },
+  {
+    "id": "381fdec5-f0f4-4914-8ac5-eb3117e6e836",
+    "case_id": "b1d71e84-19cf-49c1-a52a-cefd76589c1b",
+    "admin_address": "0x2aa4afe14b0592b5ebb0c247c610248d58cd14c4",
+    "encrypted_share": "ENC(RSA/ECC)[802ffd206ff7d80689376687e4b92d1299e97185d941660e1a3541e5bb15a809db952d1f4bac79f6dbf77b9311a2a95a36bc7cc13bb6931a7aa5aea1fcda1c995c7bc1ae0650190ff93fa3e19d3abaf7d4f000b2421e3ddf9b3a0354a0f75c3adeaab963980e0db552b60eadcf73aa5bc2489521464d44298977d2185a38532a6939f]_with_mock_admin2_pub",
+    "created_at": "2026-02-28T19:53:23.248754"
+  },
+  {
+    "id": "584b7305-f131-41c9-87e6-2cc95167346e",
+    "case_id": "b1d71e84-19cf-49c1-a52a-cefd76589c1b",
+    "admin_address": "0x223ce90a190eb1bfe721be510d1ad6ea24f52999",
+    "encrypted_share": "ENC(RSA/ECC)[80380bb340efec0e054f35cd7e0e83726d1ec1443dea150077c4f1146676cc0e16b4a3732e71b5ee66e576b9517275166d033aa8c68cfa7c4ffe39f8725ed23602a5d1705d9bcd899549d21a9344176fce61b808abf8a3db764e9a1fd86da2c6d9fccdd14c08a3867b0c69f26023e79fb36fd7b2c562963e752d7bfdc7c552b495445]_with_mock_admin3_pub",
+    "created_at": "2026-02-28T19:53:23.248754"
+  }
+]

@@ -114,18 +114,18 @@ exports.approveRequest = async (req, res) => {
         const { request_id, case_id, admin_address } = req.body;
 
         // 1. Fetch exactly the SSS piece assigned mathematically to THIS Admin wallet
-        const { data: shareData, error: shareErr } = await supabase
+        const { data: shareDataArray, error: shareErr } = await supabase
             .from('admin_key_shares')
             .select('encrypted_share')
             .eq('case_id', case_id)
             .eq('admin_address', admin_address.toLowerCase())
-            .single();
+            .limit(1);
 
-        if (shareErr || !shareData) {
+        if (shareErr || !shareDataArray || shareDataArray.length === 0) {
             return res.status(403).json({ error: 'No SSS share found assigned directly to your wallet.' });
         }
 
-        const actualEncryptedShare = shareData.encrypted_share;
+        const actualEncryptedShare = shareDataArray[0].encrypted_share;
 
         // Check if this admin already approved this exact request
         const { data: existingApproval } = await supabase
@@ -133,9 +133,9 @@ exports.approveRequest = async (req, res) => {
             .select('id')
             .eq('request_id', request_id)
             .eq('admin_address', admin_address.toLowerCase())
-            .single();
+            .limit(1);
 
-        if (existingApproval) {
+        if (existingApproval && existingApproval.length > 0) {
             return res.status(400).json({ error: 'You have already released your share for this case.' });
         }
 

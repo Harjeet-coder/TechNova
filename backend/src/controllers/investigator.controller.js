@@ -112,8 +112,12 @@ exports.downloadEncryptedFile = async (req, res) => {
 
         if (error || !data) return res.status(404).json({ error: 'Item not found' });
 
-        // Return CID so frontend can fetch from IPFS directly
-        res.status(200).json({ cid: data.ipfs_cid });
+        // Fetch the file server-side to bypass Pinata Gateway CORS restrictions for the frontend
+        const axios = require('axios');
+        const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${data.ipfs_cid}`;
+        const ipfsResponse = await axios.get(ipfsUrl, { responseType: 'text' });
+
+        res.status(200).send(ipfsResponse.data);
     } catch (error) {
         res.status(500).json({ error: 'Internal error' });
     }

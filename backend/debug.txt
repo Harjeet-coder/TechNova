@@ -1,0 +1,23 @@
+[
+  {
+    "admin_id": "5cf5a032-5cd8-4fd7-89b8-79c9e2ff9a20",
+    "wallet_address": "0xde394be3499eea6df0eab7d7d3954348263f106e",
+    "name": null,
+    "created_at": "2026-02-28T15:23:05.960116+00:00",
+    "public_key": "mock_admin1_pub"
+  },
+  {
+    "admin_id": "5358db0d-1568-48ca-8980-aa25a33d28f2",
+    "wallet_address": "0x2aa4afe14b0592b5ebb0c247c610248d58cd14c4",
+    "name": null,
+    "created_at": "2026-02-28T15:23:05.960116+00:00",
+    "public_key": "mock_admin2_pub"
+  },
+  {
+    "admin_id": "771c5996-65a4-4199-94d2-012e09403eb8",
+    "wallet_address": "0x223ce90a190eb1bfe721be510d1ad6ea24f52999",
+    "name": null,
+    "created_at": "2026-02-28T17:47:19.987997+00:00",
+    "public_key": "mock_admin3_pub"
+  }
+]

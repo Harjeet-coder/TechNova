@@ -45,12 +45,11 @@ const AdminDashboard = ({ account }) => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const [statsRes, casesRes, invRes, reqRes] = await Promise.all([
-                axios.get(`${API_URL}/stats`),
-                axios.get(`${API_URL}/cases`),
-                axios.get(`${API_URL}/investigators`),
-                axios.get(`${API_URL}/requests`)
-            ]);
+            // Fetch sequentially to prevent Supabase free-tier rate limiting/Cloudflare HTML errors
+            const statsRes = await axios.get(`${API_URL}/stats`);
+            const casesRes = await axios.get(`${API_URL}/cases`);
+            const invRes = await axios.get(`${API_URL}/investigators`);
+            const reqRes = await axios.get(`${API_URL}/requests`);
             setStats({
                 totalCases: statsRes.data.totalCases || 0,
                 revealedCases: statsRes.data.revealedCases || 0

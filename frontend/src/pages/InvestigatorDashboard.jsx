@@ -100,8 +100,8 @@ const InvestigatorDashboard = ({ account }) => {
 
             toast.loading(`Success! AES Key Derived. Fetching IPFS Hash: ${metadata.ipfs_cid}...`, { id: unlockToast });
 
-            // 4. Fetch the encrypted file from IPFS directly and run CryptoJS decrypt here
-            const encryptedIPFSData = await axios.get(`https://gateway.pinata.cloud/ipfs/${metadata.ipfs_cid}`);
+            // 4. Fetch the encrypted file securely through the backend proxy to explicitly bypass Pinata Gateway CORS policies
+            const encryptedIPFSData = await axios.get(`${API_URL}/download/${caseId}`);
 
             // Decrypt the payload
             const decryptedFile = CryptoJS.AES.decrypt(encryptedIPFSData.data, reassembledAesKey).toString(CryptoJS.enc.Utf8);
