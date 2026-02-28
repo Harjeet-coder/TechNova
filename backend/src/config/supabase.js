@@ -1,0 +1,11 @@
+const { createClient } = require('@supabase/supabase-js');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const supabaseUrl = process.env.SUPABASE_URL || 'https://mock.supabase.co';
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || 'mock-key';
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+module.exports = supabase;
