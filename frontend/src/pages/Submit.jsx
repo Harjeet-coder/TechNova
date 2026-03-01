@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UploadCloud, CheckCircle, AlertTriangle, Shield, FileSignature, Tag } from 'lucide-react';
+import { UploadCloud, CheckCircle, AlertTriangle, Shield, FileSignature, Tag, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -13,6 +13,8 @@ const Submit = ({ account }) => {
     const [file, setFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [adminKeys, setAdminKeys] = useState([]);
+    const [revealMode, setRevealMode] = useState('immediate');
+    const [revealTimestamp, setRevealTimestamp] = useState('');
 
     const API_URL = 'http://localhost:5000/api/evidence/upload';
 
@@ -48,6 +50,11 @@ const Submit = ({ account }) => {
 
         if (!formData.title || !formData.description || !formData.category || !file) {
             toast.error('Please fill all fields, select a category, and upload evidence');
+            return;
+        }
+
+        if (revealMode === 'time_based' && !revealTimestamp) {
+            toast.error('Please select a date and time for the Timed Reveal');
             return;
         }
 
@@ -118,7 +125,10 @@ const Submit = ({ account }) => {
             data.append('category', formData.category);
             data.append('evidence', encryptedFileObject);
             data.append('anon_id', account);
-            data.append('reveal_mode', 'time_based');
+            data.append('reveal_mode', revealMode);
+            if (revealMode === 'time_based' && revealTimestamp) {
+                data.append('reveal_timestamp', new Date(revealTimestamp).toISOString());
+            }
             data.append('admin_shares', JSON.stringify(adminShares));
 
             const response = await axios.post(API_URL, data, {
@@ -137,6 +147,8 @@ const Submit = ({ account }) => {
             // Reset form
             setFormData({ title: '', description: '', category: '' });
             setFile(null);
+            setRevealMode('immediate');
+            setRevealTimestamp('');
 
         } catch (error) {
             console.error('Submission error:', error);
@@ -215,6 +227,47 @@ const Submit = ({ account }) => {
                             onChange={handleInputChange}
                             required
                         ></textarea>
+                    </div>
+
+                    <div className="form-group" style={{ marginBottom: '1.5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                        <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                            <Clock size={18} /> Evidence Reveal Strategy
+                        </label>
+                        <select
+                            className="form-input"
+                            value={revealMode}
+                            onChange={(e) => setRevealMode(e.target.value)}
+                            style={{ marginBottom: '10px' }}
+                        >
+                            <option value="immediate">Immediate Reveal (Investigators can see it right now)</option>
+                            <option value="trigger">Manual Trigger (Hidden until you click 'Trigger' in Dashboard)</option>
+                            <option value="time_based">Timed Reveal (Automatically unlocks on a future date)</option>
+                        </select>
+
+                        {revealMode === 'time_based' && (
+                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} style={{ marginTop: '10px' }}>
+                                <label className="form-label" style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Select Reveal Date & Time</label>
+                                <input
+                                    type="datetime-local"
+                                    className="form-input"
+                                    value={revealTimestamp}
+                                    onChange={(e) => setRevealTimestamp(e.target.value)}
+                                    min={new Date().toISOString().slice(0, 16)}
+                                    required={revealMode === 'time_based'}
+                                />
+                            </motion.div>
+                        )}
+
+                        {revealMode === 'trigger' && (
+                            <p style={{ fontSize: '0.85rem', color: '#00f0ff', marginTop: '5px' }}>
+                                Your evidence will be completely invisible to investigators until you manually pull the trigger from your dashboard.
+                            </p>
+                        )}
+                        {revealMode === 'immediate' && (
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '5px' }}>
+                                Evidence will be visible to investigators in your category immediately.
+                            </p>
+                        )}
                     </div>
 
                     <div className="form-group">

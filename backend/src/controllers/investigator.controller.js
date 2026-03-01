@@ -39,9 +39,9 @@ exports.listCases = async (req, res) => {
         if (invErr || !investigator) return res.status(403).json({ error: 'Investigator not found' });
 
         // 2. Fetch cases matching investigator's category (only metadata, no CID or hashes for security)
-        const { data: cases, error: casesErr } = await supabase
+        const { data: casesData, error: casesErr } = await supabase
             .from('cases')
-            .select('case_id, title, description, category, status, created_at')
+            .select('case_id, title, description, category, status, created_at, reveal_mode, reveal_status, reveal_timestamp')
             .eq('category', investigator.category)
             .order('created_at', { ascending: false });
 
@@ -54,6 +54,19 @@ exports.listCases = async (req, res) => {
             .eq('investigator_id', investigator.investigator_id);
 
         if (reqErr) throw reqErr;
+
+        // Verify reveal status locally
+        const now = new Date();
+        const cases = casesData.filter(c => {
+            if (c.reveal_status === 'revealed') return true;
+            if (c.reveal_mode === 'time_based') {
+                if (c.reveal_timestamp && new Date(c.reveal_timestamp) <= now) return true;
+                if (!c.reveal_timestamp) return true; // BACKWARDS COMPATIBILITY for old cases
+            }
+            if (c.reveal_mode === 'immediate') return true;
+            if (!c.reveal_mode) return true; // Failsafe for very old cases
+            return false;
+        });
 
         // Merge request status into cases
         const processedCases = cases.map(c => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Fingerprint, Clock, FileKey, ExternalLink, Activity, CheckCircle, Circle, AlertCircle, MessageSquare } from 'lucide-react';
+import { Fingerprint, Clock, FileKey, ExternalLink, Activity, CheckCircle, Circle, AlertCircle, MessageSquare, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import CaseModal from '../components/CaseModal';
@@ -30,6 +30,20 @@ const Dashboard = ({ account }) => {
             toast.error('Failed to load your encrypted submissions');
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleTriggerReveal = async (caseId) => {
+        const loadingToast = toast.loading('Releasing evidence to network...');
+        try {
+            await axios.post('http://localhost:5000/api/case/trigger-reveal', {
+                case_id: caseId,
+                anon_id: account
+            });
+            toast.success('Evidence successfully revealed!', { id: loadingToast });
+            fetchMyReports(); // Refresh the visible status
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Failed to trigger reveal', { id: loadingToast });
         }
     };
 
@@ -125,6 +139,10 @@ const Dashboard = ({ account }) => {
                                     <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.4rem', display: 'flex', gap: '1rem' }}>
                                         <span><Clock size={12} style={{ display: 'inline', marginRight: '4px' }} />{formatDate(report.created_at)}</span>
                                         <span><FileKey size={12} style={{ display: 'inline', marginRight: '4px' }} />{truncateHash(report.file_hash)}</span>
+                                        <span style={{ color: report.reveal_status === 'revealed' ? 'var(--success)' : '#00f0ff' }}>
+                                            <Eye size={12} style={{ display: 'inline', marginRight: '4px' }} />
+                                            {report.reveal_mode === 'trigger' ? 'Manual Trigger' : report.reveal_mode === 'time_based' ? 'Timed Reveal' : 'Immediate Reveal'} ({report.reveal_status})
+                                        </span>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
@@ -138,6 +156,16 @@ const Dashboard = ({ account }) => {
                                     >
                                         <MessageSquare size={14} /> Open Timeline & Chat
                                     </button>
+
+                                    {report.reveal_mode === 'trigger' && report.reveal_status !== 'revealed' && (
+                                        <button
+                                            className="view-btn"
+                                            style={{ backgroundColor: 'rgba(255, 50, 100, 0.1)', color: '#ff3264', border: '1px solid #ff3264', padding: '0.4rem 0.8rem', borderRadius: '6px', marginTop: '4px' }}
+                                            onClick={() => handleTriggerReveal(report.case_id)}
+                                        >
+                                            <Eye size={14} /> Pull Trigger to Reveal
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 

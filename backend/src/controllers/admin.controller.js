@@ -42,8 +42,22 @@ exports.assignInvestigator = async (req, res) => {
 
 exports.getStats = async (req, res) => {
     try {
-        const { count: totalCases } = await supabase.from('cases').select('*', { count: 'exact', head: true });
-        const { count: revealedCases } = await supabase.from('cases').select('*', { count: 'exact', head: true }).eq('reveal_status', 'revealed');
+        const { data: allCases, error } = await supabase.from('cases').select('reveal_status, reveal_mode, reveal_timestamp');
+        if (error) throw error;
+
+        const now = new Date();
+        const totalCases = allCases.length;
+        const revealedCases = allCases.filter(c => {
+            if (c.reveal_status === 'revealed') return true;
+            if (c.reveal_mode === 'time_based') {
+                if (c.reveal_timestamp && new Date(c.reveal_timestamp) <= now) return true;
+                if (!c.reveal_timestamp) return true; // BACKWARDS COMPATIBILITY for old cases
+            }
+            if (c.reveal_mode === 'immediate') return true;
+            if (!c.reveal_mode) return true; // Failsafe for very old cases
+            return false;
+        }).length;
+
         res.status(200).json({ totalCases, revealedCases });
     } catch (error) {
         res.status(500).json({ error: 'Internal error' });
@@ -54,7 +68,21 @@ exports.getAllCases = async (req, res) => {
     try {
         const { data, error } = await supabase.from('cases').select('*').order('created_at', { ascending: false });
         if (error) throw error;
-        res.status(200).json(data);
+
+        // Verify reveal status locally
+        const now = new Date();
+        const visibleCases = data.filter(c => {
+            if (c.reveal_status === 'revealed') return true;
+            if (c.reveal_mode === 'time_based') {
+                if (c.reveal_timestamp && new Date(c.reveal_timestamp) <= now) return true;
+                if (!c.reveal_timestamp) return true; // BACKWARDS COMPATIBILITY for old cases
+            }
+            if (c.reveal_mode === 'immediate') return true;
+            if (!c.reveal_mode) return true; // Failsafe for very old cases
+            return false;
+        });
+
+        res.status(200).json(visibleCases);
     } catch (error) {
         res.status(500).json({ error: 'Internal error' });
     }

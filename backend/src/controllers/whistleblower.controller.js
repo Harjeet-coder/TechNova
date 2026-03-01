@@ -8,7 +8,7 @@ const supabase = require('../config/supabase');
 
 exports.uploadEvidence = async (req, res) => {
     try {
-        const { anon_id, reveal_mode, description, title, category, admin_shares } = req.body;
+        const { anon_id, reveal_mode, reveal_timestamp, description, title, category, admin_shares } = req.body;
         const file = req.file;
 
         if (!file) {
@@ -40,10 +40,11 @@ exports.uploadEvidence = async (req, res) => {
                 title,
                 category,
                 reveal_mode,
+                reveal_timestamp: reveal_mode === 'time_based' ? reveal_timestamp : null,
                 authenticity_score: authScore,
                 description,
                 status: 'submitted',
-                reveal_status: 'locked'
+                reveal_status: reveal_mode === 'immediate' ? 'revealed' : 'locked'
             }]).select();
 
         if (caseErr) throw caseErr;
@@ -125,6 +126,25 @@ exports.getWhistleblowerCases = async (req, res) => {
         res.status(200).json(data || []);
     } catch (error) {
         console.error('Error fetching whistleblower cases:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+exports.triggerReveal = async (req, res) => {
+    try {
+        const { case_id, anon_id } = req.body;
+        // Verify anon_id is the owner
+        const { data, error } = await supabase.from('cases').select('anon_id, reveal_mode').eq('case_id', case_id).single();
+        if (error || !data) return res.status(404).json({ error: 'Case not found' });
+        if (data.anon_id.toLowerCase() !== anon_id.toLowerCase()) return res.status(403).json({ error: 'Unauthorized. You do not own this case.' });
+        if (data.reveal_mode !== 'trigger') return res.status(400).json({ error: 'Case is not in manual trigger mode.' });
+
+        const { error: updateErr } = await supabase.from('cases').update({ reveal_status: 'revealed' }).eq('case_id', case_id);
+        if (updateErr) throw updateErr;
+
+        res.status(200).json({ message: 'Evidence successfully revealed to the network.' });
+    } catch (error) {
+        console.error('Trigger reveal error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
