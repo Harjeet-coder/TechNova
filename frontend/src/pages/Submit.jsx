@@ -283,7 +283,7 @@ const Submit = ({ account }) => {
                                 {file ? <CheckCircle size={48} /> : <UploadCloud size={48} />}
                             </div>
                             <div className="file-text">
-                                {file ? `Selected: ${file.name}` : 'Click or drag file to attach (PDF, Img, Doc)'}
+                                {file ? `Selected: ${file.name}` : 'Click or drag file to attach (Any format: PDF, Img, Video, Audio, etc.)'}
                             </div>
                         </div>
                     </div>

@@ -227,8 +227,8 @@ const AdminDashboard = ({ account }) => {
                     </thead>
                     <tbody>
                         {cases.map((c, idx) => (
-                            <motion.tr key={c.id || idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 * idx }}>
-                                <td style={{ fontWeight: 600 }}>#{String(c.id).padStart(4, '0')}</td>
+                            <motion.tr key={c.case_id || idx} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 * idx }}>
+                                <td style={{ fontWeight: 600 }}>#{String(c.case_id).substring(0, 8)}</td>
                                 <td><span className="category-badge">{c.category || 'Uncategorized'}</span></td>
                                 <td>
                                     <span className={`status-badge status-${c.status === 'resolved' ? 'success' : c.status === 'investigating' ? 'warning' : 'pending'}`}>

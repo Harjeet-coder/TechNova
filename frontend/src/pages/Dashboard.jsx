@@ -127,7 +127,7 @@ const Dashboard = ({ account }) => {
                 <div className="submissions-list">
                     {reports.map((report, idx) => (
                         <motion.div
-                            key={report.id || idx}
+                            key={report.case_id || idx}
                             className="timeline-card"
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -147,7 +147,7 @@ const Dashboard = ({ account }) => {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
                                     <span className={`report-status status-pending`}>
-                                        ID: #{String(report.id || idx + 1).padStart(4, '0')}
+                                        ID: #{String(report.case_id).substring(0, 8)}
                                     </span>
                                     <button
                                         className="view-btn"
@@ -194,7 +194,7 @@ const Dashboard = ({ account }) => {
                 caseData={activeCaseModal}
                 account={account}
                 role="whistleblower"
-                aesKey={activeCaseModal ? localStorage.getItem(`case_key_${activeCaseModal.case_id || activeCaseModal.id}`) : null}
+                aesKey={activeCaseModal ? localStorage.getItem(`case_key_${activeCaseModal.case_id}`) : null}
             />
         </div>
     );

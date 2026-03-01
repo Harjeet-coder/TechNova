@@ -35,8 +35,8 @@ const CaseModal = ({ isOpen, onClose, caseData, account, role, aesKey }) => {
     const fetchData = async () => {
         try {
             const [timeRes, chatRes] = await Promise.all([
-                axios.get(`${API_URL}/timeline/${caseData.case_id || caseData.id}`),
-                axios.get(`${API_URL}/chat/${caseData.case_id || caseData.id}`)
+                axios.get(`${API_URL}/timeline/${caseData.case_id}`),
+                axios.get(`${API_URL}/chat/${caseData.case_id}`)
             ]);
 
             setTimeline(timeRes.data || []);
@@ -67,7 +67,7 @@ const CaseModal = ({ isOpen, onClose, caseData, account, role, aesKey }) => {
 
         try {
             await axios.post(`${API_URL}/timeline`, {
-                case_id: caseData.case_id || caseData.id,
+                case_id: caseData.case_id,
                 update_text: newUpdate,
                 updated_by_wallet: account
             });
@@ -92,7 +92,7 @@ const CaseModal = ({ isOpen, onClose, caseData, account, role, aesKey }) => {
             const encryptedText = CryptoJS.AES.encrypt(newMessage, aesKey).toString();
 
             await axios.post(`${API_URL}/chat`, {
-                case_id: caseData.case_id || caseData.id,
+                case_id: caseData.case_id,
                 encrypted_message: encryptedText,
                 sender_wallet: account,
                 sender_role: role // 'whistleblower' or 'investigator'
@@ -113,7 +113,7 @@ const CaseModal = ({ isOpen, onClose, caseData, account, role, aesKey }) => {
                 <button className="modal-close" onClick={onClose}><X size={24} /></button>
 
                 <div className="modal-header">
-                    <h2>Case Details: #{String(caseData.case_id || caseData.id).substring(0, 8)}...</h2>
+                    <h2>Case Details: #{String(caseData.case_id).substring(0, 8)}...</h2>
                     <p className="modal-subtitle">E2E Encrypted Communication Channel</p>
                 </div>
 

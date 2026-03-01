@@ -194,7 +194,7 @@ const InvestigatorDashboard = ({ account }) => {
                                     Status: {report.request_status === 'none' ? 'Locked' : report.request_status.toUpperCase()}
                                 </span>
                                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
-                                    Case ID: #{String(report.case_id || idx + 1).padEnd(8, '0').substring(0, 8)}
+                                    Case ID: #{String(report.case_id).substring(0, 8)}
                                 </span>
                             </div>
 
