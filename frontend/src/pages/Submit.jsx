@@ -127,6 +127,11 @@ const Submit = ({ account }) => {
 
             console.log('Submission Response:', response.data);
 
+            // Store AES Key Locally so the Whistleblower can decrypt Investigator messages later
+            if (response.data && response.data.case_id) {
+                localStorage.setItem(`case_key_${response.data.case_id}`, aesKey);
+            }
+
             toast.success('Successfully Encrypted & Submitted to Polygon!', { id: processingToast });
 
             // Reset form

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Fingerprint, Clock, FileKey, Lock, Unlock, Zap, Activity, ShieldAlert } from 'lucide-react';
+import { Fingerprint, Clock, FileKey, Lock, Unlock, Zap, Activity, ShieldAlert, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import CryptoJS from 'crypto-js';
 import secrets from 'secrets.js';
 import { signAuthMessage } from '../utils/auth';
+import CaseModal from '../components/CaseModal';
 import './InvestigatorDashboard.css';
 
 const InvestigatorDashboard = ({ account }) => {
@@ -13,6 +14,8 @@ const InvestigatorDashboard = ({ account }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [decryptedData, setDecryptedData] = useState(null);
+    const [activeCaseModal, setActiveCaseModal] = useState(null);
+    const [caseAesKeys, setCaseAesKeys] = useState({});
 
     const API_URL = 'http://localhost:5000/api/investigator';
 
@@ -97,6 +100,9 @@ const InvestigatorDashboard = ({ account }) => {
             // 3. Reconstruct AES Key
             const hexKey = secrets.combine(decryptedSharesStr.slice(0, 2));
             const reassembledAesKey = secrets.hex2str(hexKey);
+
+            // Store the dynamically reassembled AES key in memory explicitly for E2E Chat encryption
+            setCaseAesKeys(prev => ({ ...prev, [caseId]: reassembledAesKey }));
 
             toast.loading(`Success! AES Key Derived. Fetching IPFS Hash: ${metadata.ipfs_cid}...`, { id: unlockToast });
 
@@ -210,7 +216,7 @@ const InvestigatorDashboard = ({ account }) => {
                                 </div>
                             </div>
 
-                            <div className="report-footer">
+                            <div className="report-footer" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                 {report.request_status === 'none' ? (
                                     <button
                                         className="view-btn"
@@ -232,6 +238,14 @@ const InvestigatorDashboard = ({ account }) => {
                                         <Unlock size={14} /> Decrypt Evidence Locally
                                     </button>
                                 ) : null}
+
+                                <button
+                                    className="view-btn"
+                                    style={{ color: 'var(--primary-color)', border: '1px solid var(--primary-color)', padding: '0.5rem 1rem', borderRadius: '8px' }}
+                                    onClick={() => setActiveCaseModal(report)}
+                                >
+                                    <MessageSquare size={14} /> Timeline & Chat
+                                </button>
                             </div>
                         </motion.div>
                     ))
@@ -268,6 +282,15 @@ const InvestigatorDashboard = ({ account }) => {
                     </div>
                 </div>
             )}
+
+            <CaseModal
+                isOpen={!!activeCaseModal}
+                onClose={() => setActiveCaseModal(null)}
+                caseData={activeCaseModal}
+                account={account}
+                role="investigator"
+                aesKey={activeCaseModal ? caseAesKeys[activeCaseModal.case_id] : null}
+            />
         </div>
     );
 };

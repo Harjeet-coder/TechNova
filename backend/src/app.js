@@ -7,6 +7,7 @@ const adminRoutes = require('./routes/admin.routes');
 const authorityRoutes = require('./routes/authority.routes');
 const revealRoutes = require('./routes/reveal.routes');
 const authRoutes = require('./routes/auth.routes');
+const communicationRoutes = require('./routes/communication.routes');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/authority', authorityRoutes);
 app.use('/api/reveal', revealRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/communication', communicationRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

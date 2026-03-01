@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Fingerprint, Clock, FileKey, ExternalLink, Activity, CheckCircle, Circle, AlertCircle } from 'lucide-react';
+import { Fingerprint, Clock, FileKey, ExternalLink, Activity, CheckCircle, Circle, AlertCircle, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import CaseModal from '../components/CaseModal';
 import './Dashboard.css';
 
 const Dashboard = ({ account }) => {
     const [reports, setReports] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [activeCaseModal, setActiveCaseModal] = useState(null);
 
     useEffect(() => {
         if (account) {
@@ -125,9 +127,18 @@ const Dashboard = ({ account }) => {
                                         <span><FileKey size={12} style={{ display: 'inline', marginRight: '4px' }} />{truncateHash(report.file_hash)}</span>
                                     </div>
                                 </div>
-                                <span className={`report-status status-pending`}>
-                                    ID: #{String(report.id || idx + 1).padStart(4, '0')}
-                                </span>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                                    <span className={`report-status status-pending`}>
+                                        ID: #{String(report.id || idx + 1).padStart(4, '0')}
+                                    </span>
+                                    <button
+                                        className="view-btn"
+                                        style={{ backgroundColor: 'rgba(0, 240, 255, 0.1)', color: 'var(--primary-color)', border: '1px solid var(--primary-color)', padding: '0.4rem 0.8rem', borderRadius: '6px' }}
+                                        onClick={() => setActiveCaseModal(report)}
+                                    >
+                                        <MessageSquare size={14} /> Open Timeline & Chat
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="timeline-visualization">
@@ -149,6 +160,14 @@ const Dashboard = ({ account }) => {
                     ))}
                 </div>
             )}
+            <CaseModal
+                isOpen={!!activeCaseModal}
+                onClose={() => setActiveCaseModal(null)}
+                caseData={activeCaseModal}
+                account={account}
+                role="whistleblower"
+                aesKey={activeCaseModal ? localStorage.getItem(`case_key_${activeCaseModal.case_id || activeCaseModal.id}`) : null}
+            />
         </div>
     );
 };
